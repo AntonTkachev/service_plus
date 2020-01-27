@@ -3,7 +3,7 @@ package com.service.plus
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
-import akka.http.scaladsl.server.Directives.{complete, extractUri, get, handleExceptions, parameters, path, _}
+import akka.http.scaladsl.server.Directives.{complete, get, handleExceptions, parameters, path, _}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.stream.ActorMaterializer
 import org.apache.http.client.HttpResponseException
@@ -11,17 +11,7 @@ import org.apache.http.client.HttpResponseException
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 
-object WebServer extends WebServerUtils {
-
-  def convert(from: String, to: String, number: Long): String = {
-    require(from.nonEmpty, "From currency should be require")
-    val rootInterface: RootInterface = getCurrencyData(s"https://api.ratesapi.io/api/latest?base=$from")
-    val rates = rootInterface.rates
-    rates.get(to) match {
-      case Some(to) => s"""{"result":${number * to}}"""
-      case _ => throw new IllegalArgumentException(s"Can't find data for currency $to")
-    }
-  }
+object WebServer {
 
   private def exceptionHandler: ExceptionHandler =
     ExceptionHandler {
@@ -35,12 +25,12 @@ object WebServer extends WebServerUtils {
         }
     }
 
-  private[plus] val route: Route = path("convert") {
+  val route: Route = path("convert") {
     get {
       parameters('from.as[String], 'to.as[String], 'number.as[Long]) { (from, to, number) =>
         handleExceptions(exceptionHandler) {
           complete {
-            convert(from, to, number)
+            Converter.currency(from, to, number)
           }
         }
       }

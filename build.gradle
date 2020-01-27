@@ -25,3 +25,11 @@ dependencies {
     testCompile 'com.typesafe.akka:akka-http-testkit_2.13:10.1.11'
     testCompile 'org.scalatest:scalatest_2.13:3.0.8'
 }
+
+ext {
+    javaMainClass = "com.service.plus.WebServer"
+}
+
+application {
+    mainClassName = javaMainClass
+}

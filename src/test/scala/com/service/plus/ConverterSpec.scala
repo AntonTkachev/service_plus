@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.MissingQueryParamRejection
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest._
 
-class WebServerUtilsTest extends FlatSpec with Matchers with ScalatestRouteTest {
+class ConverterSpec extends FlatSpec with Matchers with ScalatestRouteTest {
 
   private def supposedException(uri: String) =
     s"""Request to http://example.com$uri could not be processed correctly!"""
@@ -15,7 +15,7 @@ class WebServerUtilsTest extends FlatSpec with Matchers with ScalatestRouteTest 
     val to = "RUB"
     val number = 42
     Get(s"/convert?from=$from&to=$to&number=$number") ~> WebServer.route ~> check {
-      responseAs[String] shouldEqual WebServer.convert(from, to, number)
+      responseAs[String] shouldEqual Converter.currency(from, to, number)
     }
   }
 
