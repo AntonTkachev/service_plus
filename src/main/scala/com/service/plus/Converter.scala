@@ -6,6 +6,12 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
 
 object Converter {
+  /**
+   * @param from   - convert currency name from
+   * @param to     - convert currency name to
+   * @param number - amount of currency
+   * @return string in json format with convert value
+   */
   def currency(from: String, to: String, number: Long): String = {
     require(from.nonEmpty, "From currency should be require")
     val json: String = getBodyFromResponse(s"https://api.ratesapi.io/api/latest?base=$from")
@@ -17,6 +23,10 @@ object Converter {
     }
   }
 
+  /**
+   * @param URI - path to try get currency information
+   * @return body of response in String type
+   */
   private def getBodyFromResponse(URI: String): String = {
     val httpClient = HttpClients.createDefault
     val request = new HttpGet(URI)

@@ -27,7 +27,7 @@ object WebServer {
 
   val route: Route = path("convert") {
     get {
-      parameters('from.as[String], 'to.as[String], 'number.as[Long]) { (from, to, number) =>
+      parameters(Symbol("from").as[String], Symbol("to").as[String], Symbol("number").as[Long]) { (from, to, number) =>
         handleExceptions(exceptionHandler) {
           complete {
             Converter.currency(from, to, number)
